@@ -1,7 +1,18 @@
 @extends('layout')
 
 @section('content')
-    <div class="mb-6">
+        <div class="mb-6">
+            <div class="mb-4 text-right">
+                <p class="text-gray-600">
+                    Hola, <span class="font-bold text-blue-600">{{ Auth::user()->name }}</span>
+                </p>       
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-sm text-red-500 hover:underline">
+                    Cerrar Sesión
+                </button>
+            </form>
+            </div>
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Mis Notas</h1>
             <a href="{{ route('notes.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">

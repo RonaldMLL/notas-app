@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // Relación: Un usuario "tiene muchas" notas
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }

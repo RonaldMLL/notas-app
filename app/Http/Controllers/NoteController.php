@@ -1,21 +1,25 @@
 <?php
-
 namespace App\Http\Controllers;
 use App\Models\Note;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth; // <--- AGREGA ESTO
 class NoteController extends Controller
 {
     public function index(Request $request)
     {
-        //$notes = Note::all();
         $search = $request->get('search');
 
-        $notes = Note::where('title', 'like', '%'.$search.'%')
-                ->orWhere('content', 'like', '%'.$search.'%')
+        // Agregamos: where('user_id', auth()->id())
+        // Esto dice: "Trae las notas DONDE el user_id sea igual al MÍO"
+        $notes = Note::where('user_id', Auth::id()) 
+                ->where(function($query) use ($search) {
+                    if ($search) {
+                        $query->where('title', 'like', '%'.$search.'%')
+                              ->orWhere('content', 'like', '%'.$search.'%');
+                                }
+                })
                 ->latest()
                 ->paginate(5);
-        // 3. Retornamos la vista igual que antes
         return view('notes.index', compact('notes'));
     }
     public function create()
@@ -31,6 +35,7 @@ class NoteController extends Controller
         Note::create([
             'title'=>$request->title,
             'content'=>$request->content,
+            'user_id'=>Auth::id(), // <--- AGREGA ESTO
         ]);
         return redirect()->route('notes.index');
     }
