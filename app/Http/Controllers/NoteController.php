@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $notes = Note::all();
+        //$notes = Note::all();
+        $search = $request->get('search');
+
+        $notes = Note::where('title', 'like', '%'.$search.'%')
+                ->orWhere('content', 'like', '%'.$search.'%')
+                ->latest()
+                ->paginate(5);
+        // 3. Retornamos la vista igual que antes
         return view('notes.index', compact('notes'));
     }
     public function create()
